@@ -13,7 +13,7 @@ const createAdmin = async () => {
 
     // Create a new admin (password hashing is handled by the model).
  await Admin.create({
-  email: "admin@studyhall.com",
+  email:  process.env.ADMIN_EMAIL,
   password: process.env.ADMIN_PASSWORD,
 });
     console.log("Admin created successfully! 🎉");
