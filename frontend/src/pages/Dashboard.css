@@ -1,0 +1,256 @@
+/* =========================================
+   DASHBOARD: Supports both light and dark modes.
+   No background is applied here, allowing ParticleBg to remain visible.
+========================================= */
+
+/* Light mode tokens (default) */
+.dashboard-page {
+  --d-text: #1a1f36;
+  --d-muted: #5b6478;
+  --d-glass: rgba(255, 255, 255, 0.72);
+  --d-glass-soft: rgba(255, 255, 255, 0.55);
+  --d-border: rgba(21, 88, 201, 0.18);
+  --d-shadow: 0 10px 30px rgba(21, 40, 120, 0.1);
+  --d-input-bg: rgba(255, 255, 255, 0.85);
+
+  background: transparent !important;
+  color: var(--d-text);
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* Dark mode tokens */
+body.dark-mode .dashboard-page {
+  --d-text: #ffffff;
+  --d-muted: #a0a0a0;
+  --d-glass: rgba(10, 12, 16, 0.6);
+  --d-glass-soft: rgba(255, 255, 255, 0.04);
+  --d-border: rgba(255, 255, 255, 0.1);
+  --d-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --d-input-bg: rgba(0, 0, 0, 0.4);
+}
+
+/* ---------- Stats cards ---------- */
+.dash-stats {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0 20px;
+  margin-top: 40px;
+}
+
+.dash-card {
+  width: 250px;
+  padding: 20px;
+  text-align: center;
+  border-radius: 16px;
+  background: var(--d-glass);
+  border: 1px solid var(--d-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--d-shadow);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.dash-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--blue);
+  box-shadow: 0 15px 35px rgba(21, 88, 201, 0.25);
+}
+
+/* Use !important and higher specificity to override conflicting styles in index.css. */
+body .dashboard-page .dash-card small {
+  display: block;
+  color: var(--d-muted) !important;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.dash-card b {
+  display: block;
+  margin-top: 10px;
+  font-size: 36px;
+  color: var(--d-text);
+}
+
+.dash-card--due {
+  background: rgba(255, 99, 71, 0.1);
+  border-color: rgba(255, 99, 71, 0.35);
+}
+body .dashboard-page .dash-card--due small,
+.dash-card--due b {
+  color: #e5533a !important;
+}
+
+/* ---------- Body ---------- */
+.dash-body {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.dash-msg-btn {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #1558c9, #3b82f6);
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(21, 88, 201, 0.35);
+  transition: transform 0.2s, filter 0.2s;
+}
+.dash-msg-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+/* ---------- Search ---------- */
+.dash-search-wrap {
+  position: relative;
+  margin-bottom: 20px;
+}
+.dash-search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--d-muted);
+  pointer-events: none;
+}
+.dash-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 15px 15px 15px 45px;
+  border-radius: 12px;
+  background: var(--d-input-bg);
+  border: 1px solid var(--d-border);
+  color: var(--d-text);
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.dash-search::placeholder {
+  color: var(--d-muted);
+}
+.dash-search:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 12px rgba(21, 88, 201, 0.2);
+}
+
+/* ---------- Legend ---------- */
+.dash-legend {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: var(--d-muted);
+}
+.dash-legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dash-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dash-dot.empty { background: #a0a0a0; }
+.dash-dot.occupied { background: #3b82f6; }
+.dash-dot.due { background: #ff7043; }
+
+/* ---------- Dashboard Panels (Cabin Map and Due List) ---------- */
+.dash-panel {
+  padding: 30px;
+  border-radius: 20px;
+  background: var(--d-glass);
+  border: 1px solid var(--d-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--d-shadow);
+}
+
+.dash-row {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+.dash-side {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.dash-col {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Additional glow effect for due cabins on top of the base .cabin.due styles in index.css. */
+.dashboard-page .cabin.due {
+  border: 2px solid var(--tomato);
+  box-shadow: 0 0 15px rgba(255, 99, 71, 0.4);
+}
+
+/* ---------- Due Payments List ---------- */
+.dash-due {
+  margin-top: 30px;
+}
+.dash-due h3 {
+  margin: 0 0 20px;
+}
+.dash-due p {
+  color: var(--d-muted);
+}
+.dash-due-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.dash-due-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 15px;
+  border-radius: 12px;
+  background: var(--d-glass-soft);
+  border: 1px solid var(--d-border);
+}
+.dash-due-name {
+  color: var(--d-text);
+  font-size: 16px;
+}
+.dash-due-cabin {
+  color: var(--d-muted);
+}
+body .dashboard-page .dash-due-label {
+  font-size: 14px;
+}
+body .dashboard-page .dash-due-label.danger { color: #e5533a !important; }
+body .dashboard-page .dash-due-label.warn { color: #d39e00 !important; }
+
+.dash-wa-btn {
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: #25d366;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: filter 0.2s;
+}
+.dash-wa-btn:hover {
+  filter: brightness(1.1);
+}

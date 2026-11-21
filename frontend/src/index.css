@@ -1,0 +1,782 @@
+/* =========================================================
+   GLOBAL STYLES
+   - Light mode is the default theme.
+   - Dark mode is enabled using the "dark-mode" class on the body.
+   - Colors are managed through CSS variables.
+   - Avoid opaque backgrounds on root containers to keep ParticleBg visible.
+========================================================= */
+
+/* ---------- THEME VARIABLES ---------- */
+:root {
+  --bg: #f4f7f6;
+  --surface: #ffffff;
+  --text: #1f2430;
+  --text-muted: #5b6478;
+  --border: #e0e0e0;
+
+  --blue: #1558c9;
+  --lime: #d4ff24;
+  --tomato: #ff6347;
+
+  --glass: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(21, 88, 201, 0.18);
+  --input-bg: #f9fafb;
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+
+  --cabin-empty: #f1f3f5;
+  --cabin-occupied: #1558c9;
+
+  --skel-a: #e6e9ee;
+  --skel-b: #f4f6f9;
+}
+
+body.dark-mode {
+  --bg: #0f0f0f;
+  --surface: #0d1117;
+  --text: #f5f5f5;
+  --text-muted: #8b949e;
+  --border: #30363d;
+
+  --glass: rgba(10, 12, 16, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(0, 0, 0, 0.5);
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+
+  --cabin-empty: #161b22;
+  --cabin-occupied: #4f8ff7;
+
+  --skel-a: #0a0c10;
+  --skel-b: #1a1c24;
+}
+
+/* ---------- GLOBAL ---------- */
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+small {
+  color: var(--text-muted);
+}
+
+/* #root must stay transparent so the particle canvas is visible */
+#root {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: transparent;
+}
+
+/* Keep page content above the fixed particle canvas */
+#root > *:not(canvas) {
+  position: relative;
+  z-index: 1;
+}
+
+.login-page,
+.page-container,
+.dashboard {
+  background: transparent;
+}
+
+/* Old cinematic background: only in dark mode */
+.cinematic-bg {
+  display: none;
+}
+body.dark-mode .cinematic-bg {
+  display: block;
+}
+
+/* =========================================================
+   NAVBAR (stays dark in both modes)
+========================================================= */
+.navbar-container {
+  background: rgba(10, 12, 16, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(21, 88, 201, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.navbar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  height: 60px;
+  gap: 20px;
+}
+
+.navbar-logo {
+  text-decoration: none;
+  color: var(--lime);
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(212, 255, 36, 0.4);
+}
+.navbar-logo span {
+  color: var(--blue);
+}
+
+.desktop-nav {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.nav-link {
+  position: relative;
+  color: #fff;
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.3s ease;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0;
+  height: 2px;
+  background-color: var(--lime);
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+.nav-link:hover {
+  color: var(--lime);
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+.nav-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-user-text {
+  color: #a8b0c0;
+  font-size: 14px;
+}
+.nav-user-text b {
+  color: #fff;
+}
+
+.avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(21, 88, 201, 0.5);
+}
+
+.avatar-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--blue);
+  box-shadow: 0 0 10px rgba(21, 88, 201, 0.5);
+  background: #fff;
+}
+
+.nav-login-btn {
+  background: var(--blue);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-logout-btn {
+  background: transparent;
+  color: var(--tomato);
+  border: 1px solid var(--tomato);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+.nav-logout-btn:hover {
+  background: var(--tomato);
+  color: #fff;
+}
+
+/* Mobile menu */
+.mobile-menu-icon {
+  display: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+}
+.mobile-menu-icon .line {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+.mobile-dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px 30px 25px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 12, 16, 0.95);
+}
+.mobile-dropdown .nav-link {
+  display: inline-block;
+  width: fit-content;
+}
+
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .mobile-menu-icon {
+    display: flex !important;
+  }
+}
+
+/* =========================================================
+   LOGIN PAGE
+========================================================= */
+.login-page {
+  position: relative;
+  z-index: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 380px;
+  padding: 40px 32px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-top: 4px solid var(--blue);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.login-title {
+  font-size: 32px;
+  margin: 0 0 4px;
+  color: var(--text);
+  text-align: center;
+}
+.login-title span {
+  color: var(--blue);
+}
+.login-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.login-card label {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: -8px;
+  font-weight: 600;
+}
+.login-card input {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+.login-card input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 10px rgba(21, 88, 201, 0.15);
+}
+
+.login-card button[type="submit"] {
+  margin-top: 15px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--blue);
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+.login-card button[type="submit"]:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+/* =========================================================
+   GENERIC DASHBOARD PIECES (used by other pages too)
+========================================================= */
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--text);
+}
+header button {
+  background: transparent;
+  color: var(--tomato);
+  border: 1px solid var(--tomato);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+header button:hover {
+  background: var(--tomato);
+  color: #fff;
+}
+
+.cards {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.card {
+  flex: 1;
+  min-width: 150px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-8px);
+  border-color: var(--blue);
+  box-shadow: 0 15px 35px rgba(21, 88, 201, 0.25);
+}
+.card small {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.card b {
+  font-size: 28px;
+  color: var(--text);
+}
+.card.due b {
+  color: var(--tomato);
+}
+
+/* ---------- Search ---------- */
+.search-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 16px;
+}
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px 14px 48px;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  font-size: 15px;
+  background: var(--input-bg);
+  color: var(--text);
+  outline: none;
+  transition: all 0.3s ease;
+}
+.search::placeholder {
+  color: var(--text-muted);
+}
+.search:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 15px rgba(21, 88, 201, 0.15);
+}
+
+/* ---------- Legend + cabin map ---------- */
+.legend {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+.dot.empty { background: #aab0bb; }
+.dot.occupied { background: var(--cabin-occupied); }
+.dot.duebox { background: var(--tomato); }
+
+.map,
+.due-box {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+.map {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.row { display: flex; gap: 12px; justify-content: center; }
+.side { display: flex; gap: 24px; justify-content: center; margin-top: 10px; }
+.col { display: flex; gap: 12px; }
+
+.cabin {
+  width: 75px;
+  height: 75px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+.cabin:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.cabin b { font-size: 18px; }
+.cabin small {
+  font-size: 10px;
+  text-align: center;
+  line-height: 1.1;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+}
+
+.cabin.empty {
+  background: var(--cabin-empty);
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+.cabin.occupied {
+  background: rgba(21, 88, 201, 0.1);
+  color: var(--cabin-occupied);
+  border-color: var(--cabin-occupied);
+}
+.cabin.due {
+  border-color: var(--tomato);
+  box-shadow: 0 0 10px rgba(255, 99, 71, 0.25);
+  color: var(--tomato);
+}
+
+/* ---------- Fee due list ---------- */
+.due-box h3 {
+  margin-top: 0;
+  color: var(--tomato);
+}
+.due-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.due-item:last-child { border-bottom: none; }
+.due-item b { color: var(--text); }
+.due-item small.overdue { color: var(--tomato); }
+.due-item small.today { color: var(--tomato); }
+.due-item small.tomorrow { color: #d39e00; }
+
+.wa-btn {
+  background: #25d366;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+.wa-btn:hover { filter: brightness(1.1); }
+
+/* =========================================================
+   MODALS & FORMS
+========================================================= */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+.modal h3 { margin: 0 0 8px; color: var(--blue); }
+.modal label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: -6px;
+  font-weight: 600;
+}
+.modal input,
+.modal select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+}
+.modal input:focus,
+.modal select:focus {
+  border-color: var(--blue);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+.actions button[type="submit"] {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+  box-shadow: 0 0 10px rgba(21, 88, 201, 0.3);
+}
+.actions button.danger {
+  background: var(--tomato);
+  color: #fff;
+  border-color: var(--tomato);
+}
+.actions button:last-child {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+.actions button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   PREMIUM DELETE MODAL (dark in both modes)
+========================================================= */
+.premium-modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.premium-modal {
+  background: #2b2b2e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 40px 30px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  animation: modalScale 0.2s ease-out;
+}
+@keyframes modalScale {
+  from { transform: scale(0.96); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.premium-badge {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.premium-badge span {
+  background: #3b82f6;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.premium-icon-bg {
+  background: rgba(231, 76, 60, 0.15);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+.premium-title {
+  color: #fff;
+  margin: 0 0 16px;
+  font-size: 26px;
+  font-weight: 700;
+}
+.premium-desc {
+  color: #999;
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 35px;
+}
+.highlight-box,
+.highlight-danger {
+  background: #3b82f6;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  display: inline-block;
+}
+.premium-actions {
+  display: flex;
+  gap: 14px;
+}
+.btn-no,
+.btn-yes {
+  flex: 1;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #fff;
+  transition: background 0.2s;
+}
+.btn-no { background: #3a3a3d; }
+.btn-no:hover { background: #48484d; }
+.btn-yes { background: #3b82f6; }
+.btn-yes:hover { background: #2563eb; }
+
+/* =========================================================
+   SKELETON LOADER
+========================================================= */
+.skeleton {
+  background: linear-gradient(90deg, var(--skel-a) 25%, var(--skel-b) 50%, var(--skel-a) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 8px;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-text { height: 16px; margin-bottom: 8px; border-radius: 4px; }
+.skeleton-title { height: 24px; width: 50%; margin-bottom: 16px; border-radius: 4px; }
+.skeleton-card { height: 80px; border-radius: 10px; }
+.skeleton-cabin { width: 75px; height: 75px; border-radius: 8px; }
