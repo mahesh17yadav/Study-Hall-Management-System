@@ -12,11 +12,10 @@ const createAdmin = async () => {
     console.log("Old admins deleted 🗑️");
 
     // Create a new admin (password hashing is handled by the model).
-    await Admin.create({
-      email: process.env.ADMIN_EMAIL,
-      password: process.env.ADMIN_PASSWORD,
-    });
-
+ await Admin.create({
+  email: process.env.ADMIN_EMAIL,
+  password: process.env.ADMIN_PASSWORD,
+});
     console.log("Admin created successfully! 🎉");
 
     process.exit();
