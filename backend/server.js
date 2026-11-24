@@ -29,6 +29,17 @@ console.log("✅ auth, students, cabins mounted");
 });
 
 app.get("/", (req, res) => res.send("StudyHall API running"));
+// Health Check API
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "StudyHall API running",
+    database: mongoose.connection.readyState === 1
+      ? "Connected"
+      : "Disconnected"
+  });
+});
+// 404 middleware
 
 app.use((req, res) => {
   res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` });
